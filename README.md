@@ -69,3 +69,4 @@ src/lib/actions/         Server actions (start a program, complete a session)
 src/lib/offline/         Offline-first set-logging queue
 supabase/schema.sql      Full schema + RLS, already verified against a local Postgres
 ```
+# bphxfcoachingapp
