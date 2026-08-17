@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-chalk text-ink;
+  }
+}
+
+@layer utilities {
+  /* Used for every counter/stat/weight display per the design brief. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
