@@ -5,6 +5,10 @@ import { TabBar } from "@/components/TabBar";
 import { getCurrentStreak } from "@/lib/data/streak";
 import { SignOutButton } from "@/components/SignOutButton";
 
+interface ActiveAssignmentPreview {
+  program_templates: { title: string } | null;
+}
+
 export default async function ProfilePage() {
   const supabase = await createClient();
   const {
@@ -43,7 +47,7 @@ export default async function ProfilePage() {
   const rows: [string, string | number][] = [
     ["Workouts completed", workoutsCompleted ?? 0],
     ["Current streak", `${streak} days`],
-    ["Active program", activeAssignment?.program_templates?.title ?? "None"],
+    ["Active program", (activeAssignment as ActiveAssignmentPreview | null)?.program_templates?.title ?? "None"],
   ];
 
   return (

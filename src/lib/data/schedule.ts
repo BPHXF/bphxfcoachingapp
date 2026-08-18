@@ -1,5 +1,23 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+export interface NextDueSession {
+  id: string;
+  title: string;
+  assigned_date: string;
+  rescheduled_date: string | null;
+  status: string;
+  assignment_weeks: {
+    assignment_id: string;
+    program_assignments: {
+      id: string;
+      client_id: string;
+      status: string;
+      template_id: string;
+      program_templates: { title: string } | null;
+    };
+  };
+}
+
 // "Today's workout" scheduling — Decision: assigned days by default, client
 // can reschedule. A session counts as due if:
 //   - it was rescheduled to today or earlier, or
@@ -7,7 +25,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 //     earlier (covers a missed day rolling forward)
 // and it hasn't been completed or skipped yet. Ties broken by whichever due
 // date is earliest, so a missed session surfaces before today's.
-export async function getNextDueSession(supabase: SupabaseClient, clientId: string) {
+export async function getNextDueSession(
+  supabase: SupabaseClient,
+  clientId: string
+): Promise<NextDueSession | null> {
   const today = new Date().toISOString().slice(0, 10);
 
   const { data, error } = await supabase
@@ -36,5 +57,5 @@ export async function getNextDueSession(supabase: SupabaseClient, clientId: stri
     return null;
   }
 
-  return data;
+  return data as NextDueSession | null;
 }

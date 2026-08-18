@@ -2,6 +2,11 @@
 
 import { createClient } from "@/lib/supabase/server";
 
+interface SessionWithAssignmentWeek {
+  id: string;
+  assignment_weeks: { assignment_id: string } | null;
+}
+
 // Marks one day's session complete. If it was the last pending session in
 // the whole assignment, also closes out the assignment and logs a
 // `completions` row — Decision: total completions including repeats, so
@@ -16,7 +21,7 @@ export async function completeSession(sessionId: string) {
     .select("id, assignment_weeks ( assignment_id )")
     .single();
 
-  const assignmentId = session?.assignment_weeks?.assignment_id;
+  const assignmentId = (session as SessionWithAssignmentWeek | null)?.assignment_weeks?.assignment_id;
   if (!assignmentId) return;
 
   const { count: remaining } = await supabase

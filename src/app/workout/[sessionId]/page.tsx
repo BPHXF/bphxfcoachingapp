@@ -1,6 +1,26 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { WorkoutRunner } from "@/components/WorkoutRunner";
+import type { WeightUnit, BandIntensity, Equipment } from "@/lib/types";
+
+interface WorkoutSessionData {
+  id: string;
+  title: string;
+  assignment_exercises: {
+    id: string;
+    order_index: number;
+    target_sets: number;
+    target_reps: number;
+    target_weight: number | null;
+    target_weight_unit: WeightUnit;
+    band_intensity: BandIntensity | null;
+    equipment: Equipment | null;
+    notes: string | null;
+    video_provider: string | null;
+    video_ref: string | null;
+    exercises: { name: string } | null;
+  }[];
+}
 
 export default async function WorkoutPage({ params }: { params: Promise<{ sessionId: string }> }) {
   const { sessionId } = await params;
@@ -10,7 +30,7 @@ export default async function WorkoutPage({ params }: { params: Promise<{ sessio
   } = await supabase.auth.getUser();
   if (!user) redirect("/sign-in");
 
-  const { data: session } = await supabase
+  const { data: sessionRow } = await supabase
     .from("assignment_sessions")
     .select(
       `id, title,
@@ -25,6 +45,7 @@ export default async function WorkoutPage({ params }: { params: Promise<{ sessio
     .order("order_index", { referencedTable: "assignment_exercises", ascending: true })
     .single();
 
+  const session = sessionRow as WorkoutSessionData | null;
   if (!session) redirect("/");
 
   const { data: existingLogs } = await supabase
@@ -46,7 +67,7 @@ export default async function WorkoutPage({ params }: { params: Promise<{ sessio
         name: e.exercises?.name ?? "Exercise",
         sets: e.target_sets,
         reps: e.target_reps,
-        weight: e.target_weight,
+        weight: e.target_weight ?? 0,
         weightUnit: e.target_weight_unit,
         bandIntensity: e.band_intensity ?? null,
         equipment: e.equipment ?? null,

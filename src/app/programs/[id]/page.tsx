@@ -5,6 +5,26 @@ import { TopBar } from "@/components/TopBar";
 import { startProgram } from "@/lib/actions/startProgram";
 import { CommentsSection } from "@/components/CommentsSection";
 
+interface ProgramTemplateDetail {
+  id: string;
+  title: string;
+  description: string | null;
+  visibility: string;
+  program_template_weeks: {
+    week_number: number;
+    program_template_sessions: {
+      title: string;
+      program_template_exercises: {
+        target_sets: number;
+        target_reps: number;
+        target_weight: number | null;
+        target_weight_unit: string;
+        exercises: { name: string } | null;
+      }[];
+    }[];
+  }[];
+}
+
 export default async function ProgramDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
@@ -13,7 +33,7 @@ export default async function ProgramDetailPage({ params }: { params: Promise<{ 
   } = await supabase.auth.getUser();
   if (!user) redirect("/sign-in");
 
-  const { data: template } = await supabase
+  const { data: templateRow } = await supabase
     .from("program_templates")
     .select(
       `id, title, description, visibility,
@@ -28,6 +48,7 @@ export default async function ProgramDetailPage({ params }: { params: Promise<{ 
     .eq("id", id)
     .single();
 
+  const template = templateRow as ProgramTemplateDetail | null;
   if (!template) redirect("/programs");
 
   const isLibrary = template.visibility === "public_library";
