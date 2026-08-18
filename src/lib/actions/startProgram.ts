@@ -83,7 +83,7 @@ export async function startProgram(templateId: string) {
 
       firstSessionId ??= assignmentSession.id;
 
-      const exerciseRows = (session.program_template_exercises ?? []).map((ex: any) => ({
+      const exerciseRows = (session.program_template_exercises ?? []).map((ex) => ({
         assignment_session_id: assignmentSession.id,
         exercise_id: ex.exercise_id,
         order_index: ex.order_index,

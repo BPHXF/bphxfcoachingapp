@@ -65,7 +65,7 @@ export default async function ProgramDetailPage({ params }: { params: Promise<{ 
         <p className="mb-2.5 text-xs font-bold uppercase tracking-wide text-slate">
           Week 1 preview
         </p>
-        {previewSession?.program_template_exercises?.map((ex: any, i: number) => (
+        {previewSession?.program_template_exercises?.map((ex, i: number) => (
           <div key={i} className="flex items-center justify-between border-b border-border py-3">
             <span className="text-sm font-bold text-ink">{ex.exercises?.name}</span>
             <span className="tabular text-xs text-slate">

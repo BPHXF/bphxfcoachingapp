@@ -28,7 +28,7 @@ export default async function HomePage() {
 
   // Supabase's typed join shape is nested; narrow it defensively here since
   // we're on hand-written types for Phase 1 (see lib/types.ts note).
-  const assignment = (nextSession as any)?.assignment_weeks?.program_assignments;
+  const assignment = nextSession?.assignment_weeks?.program_assignments;
   const programTitle = assignment?.program_templates?.title ?? "No workout scheduled";
 
   return (
@@ -48,7 +48,7 @@ export default async function HomePage() {
           </p>
           <h2 className="m-0 mb-1 text-[19px] font-bold text-chalk">{programTitle}</h2>
           <p className="m-0 mb-4 text-xs text-[#9C9A93]">
-            {nextSession ? (nextSession as any).title : "Check your programs to get started"}
+            {nextSession ? nextSession.title : "Check your programs to get started"}
           </p>
           {nextSession && (
             <Link

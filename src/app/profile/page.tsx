@@ -43,7 +43,7 @@ export default async function ProfilePage() {
   const rows: [string, string | number][] = [
     ["Workouts completed", workoutsCompleted ?? 0],
     ["Current streak", `${streak} days`],
-    ["Active program", (activeAssignment as any)?.program_templates?.title ?? "None"],
+    ["Active program", activeAssignment?.program_templates?.title ?? "None"],
   ];
 
   return (

@@ -16,7 +16,7 @@ export async function completeSession(sessionId: string) {
     .select("id, assignment_weeks ( assignment_id )")
     .single();
 
-  const assignmentId = (session as any)?.assignment_weeks?.assignment_id;
+  const assignmentId = session?.assignment_weeks?.assignment_id;
   if (!assignmentId) return;
 
   const { count: remaining } = await supabase

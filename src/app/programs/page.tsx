@@ -25,17 +25,17 @@ export default async function ProgramsPage() {
     supabase.from("tags").select("id, name, slug").order("name"),
   ]);
 
-  const mine = (myAssignments ?? []).map((a: any) => ({
+  const mine = (myAssignments ?? []).map((a) => ({
     id: a.program_templates?.id ?? a.template_id,
     title: a.program_templates?.title ?? "Untitled program",
     subtitle: "Your coach",
   }));
 
-  const library = (libraryTemplates ?? []).map((t: any) => ({
+  const library = (libraryTemplates ?? []).map((t) => ({
     id: t.id,
     title: t.title,
     subtitle: "Home workout library",
-    tags: (t.program_template_tags ?? []).map((pt: any) => pt.tags?.name).filter(Boolean),
+    tags: (t.program_template_tags ?? []).map((pt) => pt.tags?.name).filter(Boolean),
   }));
 
   return (
