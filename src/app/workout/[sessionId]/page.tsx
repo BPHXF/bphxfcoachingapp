@@ -32,7 +32,7 @@ export default async function WorkoutPage({ params }: { params: Promise<{ sessio
     .select("assignment_exercise_id, set_number, actual_reps, actual_weight, actual_band_intensity")
     .in(
       "assignment_exercise_id",
-      (session.assignment_exercises ?? []).map((e: any) => e.id)
+      (session.assignment_exercises ?? []).map((e) => e.id)
     );
 
   return (
@@ -41,7 +41,7 @@ export default async function WorkoutPage({ params }: { params: Promise<{ sessio
       sessionTitle={session.title}
       clientId={user.id}
       weightUnit="lb"
-      exercises={(session.assignment_exercises ?? []).map((e: any) => ({
+      exercises={(session.assignment_exercises ?? []).map((e) => ({
         id: e.id,
         name: e.exercises?.name ?? "Exercise",
         sets: e.target_sets,
