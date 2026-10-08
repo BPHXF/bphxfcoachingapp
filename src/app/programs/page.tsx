@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { TabBar } from "@/components/TabBar";
@@ -55,7 +56,11 @@ export default async function ProgramsPage() {
 
   return (
     <>
-      <ProgramsTabs mine={mine} library={library} allTags={(tags ?? []).map((t) => t.name)} />
+      {/* ProgramsTabs reads useSearchParams(), which needs a Suspense
+          boundary around it for Next.js build-time prerendering. */}
+      <Suspense fallback={null}>
+        <ProgramsTabs mine={mine} library={library} allTags={(tags ?? []).map((t) => t.name)} />
+      </Suspense>
       <TabBar />
     </>
   );

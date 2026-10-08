@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -8,7 +8,18 @@ import { createClient } from "@/lib/supabase/client";
 // Decision: dual entry paths — self-serve sign-up needs no invite (library
 // browsing), while a 1:1 client arrives via a trainer-sent invite link
 // (?invite=<token>), which links trainer_id on their profile automatically.
+//
+// SignUpForm reads useSearchParams(), which requires a Suspense boundary
+// around it for Next.js static generation to succeed at build time.
 export default function SignUpPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignUpForm />
+    </Suspense>
+  );
+}
+
+function SignUpForm() {
   const supabase = createClient();
   const router = useRouter();
   const inviteToken = useSearchParams().get("invite");
@@ -41,12 +52,18 @@ export default function SignUpPage() {
       }
     }
 
-    await supabase.from("profiles").insert({
+    // Surface a failed profile insert instead of silently continuing to "/"
+    // with no profile row (the bug flagged in the launch roadmap's Week 0).
+    const { error: profileError } = await supabase.from("profiles").insert({
       id: data.user.id,
       display_name: name,
       role: "client",
       trainer_id: trainerId,
     });
+    if (profileError) {
+      setError(profileError.message ?? "Failed to create your profile. Please try again.");
+      return;
+    }
 
     router.push("/");
     router.refresh();
